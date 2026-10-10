@@ -1,0 +1,1132 @@
+<!DOCTYPE html>
+<html lang="ku" dir="ltr" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DarkGemini404 - Ultimate Cyber Security & Defense System Max</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        cyber: {
+                            bg: '#050b14',
+                            card: 'rgba(10, 20, 38, 0.90)',
+                            border: 'rgba(0, 243, 255, 0.35)',
+                            accent: '#00f3ff',
+                            neon: '#00ff66',
+                            purple: '#ab00ff',
+                            danger: '#ff0055'
+                        }
+                    },
+                    fontFamily: {
+                        mono: ['Fira Code', 'Courier New', 'monospace']
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        :root {
+            --theme-color: #00f3ff;
+            --theme-glow: rgba(0, 243, 255, 0.9);
+            --theme-box: rgba(0, 243, 255, 0.5);
+        }
+        body {
+            background-color: #050b14;
+            color: var(--theme-color);
+            font-family: 'Fira Code', monospace, sans-serif;
+            overflow: hidden;
+            user-select: none;
+            transition: color 0.3s ease;
+        }
+
+        #matrix-canvas {
+            position: absolute;
+            top: 0; left: 0; width: 100vw; height: 100vh;
+            z-index: 0;
+            opacity: 0.4;
+        }
+
+        .glass-panel {
+            background: rgba(6, 14, 28, 0.92);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1.5px solid var(--theme-box);
+            box-shadow: 0 12px 40px 0 rgba(0, 0, 0, 0.9);
+        }
+
+        .scanlines {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            pointer-events: none;
+            background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.3) 50%);
+            background-size: 100% 4px;
+            z-index: 99;
+            opacity: 0.45;
+        }
+
+        ::-webkit-scrollbar { width: 6px; height: 6px; }
+        ::-webkit-scrollbar-track { background: rgba(5, 11, 20, 0.9); }
+        ::-webkit-scrollbar-thumb { background: var(--theme-box); border-radius: 3px; }
+
+        .glow-text { text-shadow: 0 0 15px var(--theme-glow); }
+        .glow-box { box-shadow: 0 0 20px var(--theme-box); }
+
+        .cyber-grid {
+            background-size: 40px 40px;
+            background-image: 
+                linear-gradient(to right, rgba(0, 243, 255, 0.07) 1px, transparent 1px),
+                linear-gradient(to bottom, rgba(0, 243, 255, 0.07) 1px, transparent 1px);
+        }
+
+        .v-key {
+            transition: all 0.08s ease;
+            cursor: pointer;
+        }
+        .v-key:hover {
+            border-color: var(--theme-color);
+            background: rgba(0, 243, 255, 0.2);
+        }
+        .v-key.active {
+            background-color: var(--theme-color) !important;
+            color: #000 !important;
+            box-shadow: 0 0 20px var(--theme-color);
+            transform: scale(0.92);
+        }
+
+        @keyframes radar-sweep {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        .radar-sweeper {
+            animation: radar-sweep 2s linear infinite;
+        }
+        @keyframes orbit-path {
+            0% { transform: rotate(0deg) translate(90px) rotate(0deg); }
+            100% { transform: rotate(360deg) translate(90px) rotate(-360deg); }
+        }
+        .satellite-node {
+            animation: orbit-path 5s linear infinite;
+        }
+    </style>
+</head>
+<body class="h-screen w-screen relative overflow-hidden cyber-grid">
+
+    <div class="scanlines"></div>
+    <canvas id="matrix-canvas"></canvas>
+
+    <!-- LOCK SCREEN WITH ONLY PASSCODE 1234 -->
+    <div id="lock-screen" class="fixed inset-0 z-50 flex flex-col items-center justify-center bg-black/95 backdrop-blur-md transition-all duration-700">
+        <div class="text-center mb-4">
+            <h1 class="text-7xl md:text-9xl font-black text-cyber-danger/90 tracking-widest glow-text animate-pulse">404</h1>
+            <p class="text-xs tracking-[0.35em] uppercase mt-1" style="color: var(--theme-color);">MAX SECURITY PROTOCOL • PASSCODE REQUIRED</p>
+        </div>
+
+        <div class="glass-panel p-6 rounded-2xl max-w-md w-full mx-4 flex flex-col items-center shadow-2xl relative">
+            <div class="w-12 h-12 rounded-xl bg-cyber-accent/10 border flex items-center justify-center mb-3 glow-box" style="border-color: var(--theme-color); color: var(--theme-color);">
+                <i data-lucide="shield-alert" class="w-7 h-7"></i>
+            </div>
+            <h2 class="text-xl font-bold tracking-widest text-white mb-3">DarkGemini404 Gate Max</h2>
+
+            <form id="login-form" class="w-full flex flex-col gap-3">
+                <div class="relative w-full">
+                    <i data-lucide="key" class="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 opacity-70" style="color: var(--theme-color);"></i>
+                    <input type="password" id="password-input" placeholder="Passcode: 1234" class="w-full bg-black/70 border rounded-lg pl-9 pr-4 py-2.5 text-sm text-white focus:outline-none transition" style="border-color: var(--theme-box);" autofocus autocomplete="off">
+                </div>
+                <button type="submit" class="w-full bg-cyber-accent/30 hover:bg-cyber-accent/40 border font-bold py-2.5 rounded-lg tracking-wider transition flex items-center justify-center gap-2 glow-box text-xs" style="border-color: var(--theme-color); color: var(--theme-color);">
+                    <i data-lucide="unlock" class="w-4 h-4"></i>
+                    <span>AUTHENTICATE MAX SYSTEM</span>
+                </button>
+            </form>
+            <div id="error-msg" class="text-cyber-danger text-xs font-semibold mt-2 hidden flex items-center gap-1">
+                <i data-lucide="alert-triangle" class="w-3 h-3"></i>
+                <span>ACCESS DENIED - USE 1234</span>
+            </div>
+
+            <div class="mt-4 w-full bg-black/85 p-3 rounded-xl border border-cyber-accent/30 flex flex-col gap-1.5">
+                <div class="text-[10px] tracking-widest text-center mb-1 opacity-80" style="color: var(--theme-color);">VIRTUAL KEYBOARD VISUALIZER</div>
+                <div class="flex justify-center gap-1">
+                    <div data-key="1" class="v-key w-7 h-7 rounded bg-black/90 border border-cyber-accent/40 text-white flex items-center justify-center text-xs font-mono">1</div>
+                    <div data-key="2" class="v-key w-7 h-7 rounded bg-black/90 border border-cyber-accent/40 text-white flex items-center justify-center text-xs font-mono">2</div>
+                    <div data-key="3" class="v-key w-7 h-7 rounded bg-black/90 border border-cyber-accent/40 text-white flex items-center justify-center text-xs font-mono">3</div>
+                    <div data-key="4" class="v-key w-7 h-7 rounded bg-black/90 border border-cyber-accent/40 text-white flex items-center justify-center text-xs font-mono">4</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- MAIN DESKTOP -->
+    <div id="desktop-app" class="relative z-10 h-full flex flex-col">
+        <header class="h-12 glass-panel border-b flex items-center justify-between px-4 z-40" style="border-color: var(--theme-box);">
+            <div class="flex items-center gap-4">
+                <div class="flex items-center gap-2 font-bold tracking-wider cursor-pointer glow-text" style="color: var(--theme-color);">
+                    <i data-lucide="shield" class="w-5 h-5"></i>
+                    <span>DarkGemini404 OS MAX</span>
+                </div>
+                <div class="h-4 w-px bg-cyber-accent/40"></div>
+                <nav class="hidden md:flex items-center gap-1 text-xs overflow-x-auto">
+                    <button onclick="openWindow('app-threat-map')" class="px-2 py-1.5 rounded-md hover:bg-cyber-accent/20 text-white/90 hover:text-white flex items-center gap-1 transition"><i data-lucide="radio" class="w-3.5 h-3.5 text-cyber-neon"></i> Map</button>
+                    <button onclick="openWindow('app-sysmon')" class="px-2 py-1.5 rounded-md hover:bg-cyber-accent/20 text-white/90 hover:text-white flex items-center gap-1 transition"><i data-lucide="cpu" class="w-3.5 h-3.5 text-cyber-accent"></i> Sys</button>
+                    <button onclick="openWindow('app-procs')" class="px-2 py-1.5 rounded-md hover:bg-cyber-accent/20 text-white/90 hover:text-white flex items-center gap-1 transition"><i data-lucide="list-tree" class="w-3.5 h-3.5 text-cyber-neon"></i> Procs</button>
+                    <button onclick="openWindow('app-ua-inspector')" class="px-2 py-1.5 rounded-md hover:bg-cyber-accent/20 text-white/90 hover:text-white flex items-center gap-1 transition"><i data-lucide="fingerprint" class="w-3.5 h-3.5 text-cyan-400"></i> UA Inspector</button>
+                    <button onclick="openWindow('app-audit-log')" class="px-2 py-1.5 rounded-md hover:bg-cyber-accent/20 text-white/90 hover:text-white flex items-center gap-1 transition"><i data-lucide="shield-check" class="w-3.5 h-3.5 text-cyber-purple"></i> Audit Log</button>
+                    <button onclick="openWindow('app-sha256')" class="px-2 py-1.5 rounded-md hover:bg-cyber-accent/20 text-white/90 hover:text-white flex items-center gap-1 transition"><i data-lucide="key-round" class="w-3.5 h-3.5 text-rose-500"></i> SHA256</button>
+                    <button onclick="openWindow('app-base64')" class="px-2 py-1.5 rounded-md hover:bg-cyber-accent/20 text-white/90 hover:text-white flex items-center gap-1 transition"><i data-lucide="code" class="w-3.5 h-3.5 text-yellow-400"></i> Base64 Max</button>
+                    <button onclick="openWindow('app-telemetry')" class="px-2 py-1.5 rounded-md hover:bg-cyber-accent/20 text-white/90 hover:text-white flex items-center gap-1 transition"><i data-lucide="hard-drive" class="w-3.5 h-3.5 text-cyan-400"></i> Info Max</button>
+                    <button onclick="openWindow('app-logs')" class="px-2 py-1.5 rounded-md hover:bg-cyber-accent/20 text-white/90 hover:text-white flex items-center gap-1 transition"><i data-lucide="file-text" class="w-3.5 h-3.5 text-yellow-400"></i> Logs</button>
+                    <button onclick="openWindow('app-portscan')" class="px-2 py-1.5 rounded-md hover:bg-cyber-accent/20 text-white/90 hover:text-white flex items-center gap-1 transition"><i data-lucide="shield-check" class="w-3.5 h-3.5 text-cyber-neon"></i> Ports Max</button>
+                    <button onclick="openWindow('app-firewall')" class="px-2 py-1.5 rounded-md hover:bg-cyber-accent/20 text-white/90 hover:text-white flex items-center gap-1 transition"><i data-lucide="shield-alert" class="w-3.5 h-3.5 text-cyber-danger"></i> Firewall Max</button>
+                    <button onclick="openWindow('app-ai-threat')" class="px-2 py-1.5 rounded-md hover:bg-cyber-accent/20 text-white/90 hover:text-white flex items-center gap-1 transition"><i data-lucide="bot" class="w-3.5 h-3.5 text-cyber-purple"></i> AI Detector</button>
+                    <button onclick="openWindow('app-speedtest')" class="px-2 py-1.5 rounded-md hover:bg-cyber-accent/20 text-white/90 hover:text-white flex items-center gap-1 transition"><i data-lucide="gauge" class="w-3.5 h-3.5 text-cyber-neon"></i> Speed</button>
+                    <button onclick="openWindow('app-sat-radar')" class="px-2 py-1.5 rounded-md hover:bg-cyber-accent/20 text-white/90 hover:text-white flex items-center gap-1 transition"><i data-lucide="globe" class="w-3.5 h-3.5 text-cyan-400"></i> Satellite Max</button>
+                    <button onclick="openWindow('app-vault')" class="px-2 py-1.5 rounded-md hover:bg-cyber-accent/20 text-white/90 hover:text-white flex items-center gap-1 transition"><i data-lucide="lock" class="w-3.5 h-3.5 text-cyber-purple"></i> Vault</button>
+                    <button onclick="openWindow('app-terminal')" class="px-2 py-1.5 rounded-md hover:bg-cyber-accent/20 text-white/90 hover:text-white flex items-center gap-1 transition"><i data-lucide="terminal" class="w-3.5 h-3.5 text-cyber-neon"></i> Shell</button>
+                    <!-- Previous Tools -->
+                    <button onclick="openWindow('app-ddos-shield')" class="px-2 py-1.5 rounded-md hover:bg-cyber-accent/20 text-white/90 hover:text-white flex items-center gap-1 transition"><i data-lucide="activity" class="w-3.5 h-3.5 text-cyber-danger"></i> DDoS Shield</button>
+                    <button onclick="openWindow('app-ssl-checker')" class="px-2 py-1.5 rounded-md hover:bg-cyber-accent/20 text-white/90 hover:text-white flex items-center gap-1 transition"><i data-lucide="shield-check" class="w-3.5 h-3.5 text-emerald-400"></i> SSL Inspector</button>
+                    <button onclick="openWindow('app-packet-sniffer')" class="px-2 py-1.5 rounded-md hover:bg-cyber-accent/20 text-white/90 hover:text-white flex items-center gap-1 transition"><i data-lucide="wifi" class="w-3.5 h-3.5 text-cyber-neon"></i> Packet Sniffer</button>
+                    <button onclick="openWindow('app-quantum-crypt')" class="px-2 py-1.5 rounded-md hover:bg-cyber-accent/20 text-white/90 hover:text-white flex items-center gap-1 transition"><i data-lucide="cpu" class="w-3.5 h-3.5 text-purple-400"></i> Quantum Crypt</button>
+                    <button onclick="openWindow('app-ai-neural-shield')" class="px-2 py-1.5 rounded-md hover:bg-cyber-accent/20 text-white/90 hover:text-white flex items-center gap-1 transition"><i data-lucide="cpu" class="w-3.5 h-3.5 text-cyan-400"></i> Neural Shield</button>
+                    <button onclick="openWindow('app-zero-day-radar')" class="px-2 py-1.5 rounded-md hover:bg-cyber-accent/20 text-white/90 hover:text-white flex items-center gap-1 transition"><i data-lucide="crosshair" class="w-3.5 h-3.5 text-rose-500"></i> Zero-Day Radar</button>
+                    <button onclick="openWindow('app-biometric-lock')" class="px-2 py-1.5 rounded-md hover:bg-cyber-accent/20 text-white/90 hover:text-white flex items-center gap-1 transition"><i data-lucide="fingerprint" class="w-3.5 h-3.5 text-cyber-accent"></i> Bio Guard</button>
+                    <button onclick="openWindow('app-honeypot-trap')" class="px-2 py-1.5 rounded-md hover:bg-cyber-accent/20 text-white/90 hover:text-white flex items-center gap-1 transition"><i data-lucide="box" class="w-3.5 h-3.5 text-yellow-400"></i> Honeypot Max</button>
+                    <button onclick="openWindow('app-deep-packet-inspector')" class="px-2 py-1.5 rounded-md hover:bg-cyber-accent/20 text-white/90 hover:text-white flex items-center gap-1 transition"><i data-lucide="search" class="w-3.5 h-3.5 text-emerald-400"></i> DPI Deep Max</button>
+                    <button onclick="openWindow('app-edr-core')" class="px-2 py-1.5 rounded-md hover:bg-cyber-accent/20 text-white/90 hover:text-white flex items-center gap-1 transition"><i data-lucide="shield" class="w-3.5 h-3.5 text-rose-400"></i> EDR Core</button>
+                    <button onclick="openWindow('app-qkd-sim')" class="px-2 py-1.5 rounded-md hover:bg-cyber-accent/20 text-white/90 hover:text-white flex items-center gap-1 transition"><i data-lucide="key" class="w-3.5 h-3.5 text-cyan-300"></i> QKD Quantum</button>
+                    <button onclick="openWindow('app-kernel-integrity')" class="px-2 py-1.5 rounded-md hover:bg-cyber-accent/20 text-white/90 hover:text-white flex items-center gap-1 transition"><i data-lucide="cpu" class="w-3.5 h-3.5 text-amber-400"></i> Kernel Guard</button>
+                    <!-- Newly Added Attack Simulation / Exploit Tools Max -->
+                    <button onclick="openWindow('app-metasploit-core')" class="px-2 py-1.5 rounded-md hover:bg-cyber-danger/20 text-cyber-danger hover:text-cyber-danger flex items-center gap-1 transition border border-cyber-danger/30"><i data-lucide="terminal" class="w-3.5 h-3.5"></i> Metasploit Core</button>
+                    <button onclick="openWindow('app-payload-gen')" class="px-2 py-1.5 rounded-md hover:bg-cyber-danger/20 text-cyber-danger hover:text-cyber-danger flex items-center gap-1 transition border border-cyber-danger/30"><i data-lucide="cpu" class="w-3.5 h-3.5"></i> Payload Gen</button>
+                    <button onclick="openWindow('app-sqli-mapper')" class="px-2 py-1.5 rounded-md hover:bg-cyber-danger/20 text-cyber-danger hover:text-cyber-danger flex items-center gap-1 transition border border-cyber-danger/30"><i data-lucide="database" class="w-3.5 h-3.5"></i> SQLi Mapper</button>
+                    <!-- External / Quick Links -->
+                    <button onclick="window.open('https://404eye.netlify.app/','_blank')" class="px-2 py-1.5 rounded-md hover:bg-cyber-accent/20 text-white/90 hover:text-white flex items-center gap-1 transition"><i data-lucide="eye" class="w-3.5 h-3.5 text-cyan-400"></i> 404Eye</button>
+                    <button onclick="window.open('https://codepen.io','_blank')" class="px-2 py-1.5 rounded-md hover:bg-cyber-accent/20 text-white/90 hover:text-white flex items-center gap-1 transition"><i data-lucide="code-2" class="w-3.5 h-3.5 text-blue-400"></i> Visual Studio</button>
+                    <button onclick="window.open('https://github.com/','_blank')" class="px-2 py-1.5 rounded-md hover:bg-cyber-accent/20 text-white/90 hover:text-white flex items-center gap-1 transition"><i data-lucide="git-branch" class="w-3.5 h-3.5 text-white"></i> GitHub</button>
+                    <button onclick="window.open('https://canarytokens.org/nest','_blank')" class="px-2 py-1.5 rounded-md hover:bg-cyber-accent/20 text-white/90 hover:text-white flex items-center gap-1 transition"><i data-lucide="server" class="w-3.5 h-3.5 text-rose-500"></i> IP Sys 404</button>
+                </nav>
+            </div>
+            <div class="flex items-center gap-4 text-xs">
+                <div class="flex items-center gap-1 bg-black/60 p-1 rounded border border-cyber-accent/40">
+                    <button onclick="setTheme('#00f3ff', 'rgba(0, 243, 255, 0.9)', 'rgba(0, 243, 255, 0.5)')" class="w-3 h-3 rounded-full bg-cyan-400" title="Cyan"></button>
+                    <button onclick="setTheme('#00ff66', 'rgba(0, 255, 102, 0.9)', 'rgba(0, 255, 102, 0.5)')" class="w-3 h-3 rounded-full bg-emerald-400" title="Matrix Green"></button>
+                    <button onclick="setTheme('#ff0055', 'rgba(255, 0, 85, 0.9)', 'rgba(255, 0, 85, 0.5)')" class="w-3 h-3 rounded-full bg-rose-500" title="Danger Red"></button>
+                </div>
+                <div class="flex flex-col items-end">
+                    <div id="clock" class="font-bold text-white tracking-widest">00:00:00</div>
+                    <div id="utc-clock" class="text-[9px] text-cyber-accent/80">UTC: 00:00:00</div>
+                </div>
+                <div id="net-status-badge" class="px-2 py-0.5 rounded bg-cyber-neon/30 text-cyber-neon text-[9px] font-bold border border-cyber-neon/40">ONLINE MAX</div>
+                <button onclick="lockSystem()" class="p-1.5 rounded-lg hover:bg-cyber-danger/30 text-cyber-danger border border-cyber-danger/40 transition"><i data-lucide="power" class="w-4 h-4"></i></button>
+            </div>
+        </header>
+
+        <main class="flex-1 relative p-6 overflow-hidden flex flex-col justify-between">
+            <div class="grid grid-cols-2 gap-2 w-32 z-20">
+                <button onclick="openWindow('app-threat-map')" class="flex flex-col items-center gap-1 p-2 rounded-xl hover:bg-cyber-accent/20 border border-transparent hover:border-cyber-accent/40 transition group">
+                    <div class="w-8 h-8 rounded-lg bg-cyber-neon/20 border border-cyber-neon/50 flex items-center justify-center text-cyber-neon"><i data-lucide="radio" class="w-4 h-4"></i></div>
+                    <span class="text-[9px] text-white/95 font-bold">Map</span>
+                </button>
+                <button onclick="openWindow('app-sysmon')" class="flex flex-col items-center gap-1 p-2 rounded-xl hover:bg-cyber-accent/20 border border-transparent hover:border-cyber-accent/40 transition group">
+                    <div class="w-8 h-8 rounded-lg bg-cyber-accent/20 border border-cyber-accent/50 flex items-center justify-center text-cyber-accent"><i data-lucide="cpu" class="w-4 h-4"></i></div>
+                    <span class="text-[9px] text-white/95 font-bold">Sys</span>
+                </button>
+                <button onclick="openWindow('app-sat-radar')" class="flex flex-col items-center gap-1 p-2 rounded-xl hover:bg-cyber-accent/20 border border-transparent hover:border-cyber-accent/40 transition group">
+                    <div class="w-8 h-8 rounded-lg bg-cyan-500/20 border border-cyan-500/50 flex items-center justify-center text-cyan-400"><i data-lucide="globe" class="w-4 h-4"></i></div>
+                    <span class="text-[9px] text-white/95 font-bold">Satellite</span>
+                </button>
+                <button onclick="openWindow('app-portscan')" class="flex flex-col items-center gap-1 p-2 rounded-xl hover:bg-cyber-accent/20 border border-transparent hover:border-cyber-accent/40 transition group">
+                    <div class="w-8 h-8 rounded-lg bg-cyber-neon/20 border border-cyber-neon/50 flex items-center justify-center text-cyber-neon"><i data-lucide="shield-check" class="w-4 h-4"></i></div>
+                    <span class="text-[9px] text-white/95 font-bold">Ports</span>
+                </button>
+                <button onclick="openWindow('app-firewall')" class="flex flex-col items-center gap-1 p-2 rounded-xl hover:bg-cyber-accent/20 border border-transparent hover:border-cyber-accent/40 transition group">
+                    <div class="w-8 h-8 rounded-lg bg-cyber-danger/20 border border-cyber-danger/50 flex items-center justify-center text-cyber-danger"><i data-lucide="shield-alert" class="w-4 h-4"></i></div>
+                    <span class="text-[9px] text-white/95 font-bold">Firewall</span>
+                </button>
+                <button onclick="openWindow('app-base64')" class="flex flex-col items-center gap-1 p-2 rounded-xl hover:bg-cyber-accent/20 border border-transparent hover:border-cyber-accent/40 transition group">
+                    <div class="w-8 h-8 rounded-lg bg-yellow-500/20 border border-yellow-500/50 flex items-center justify-center text-yellow-400"><i data-lucide="code" class="w-4 h-4"></i></div>
+                    <span class="text-[9px] text-white/95 font-bold">Base64</span>
+                </button>
+                <!-- Attack Simulation Tool Shortcuts -->
+                <button onclick="openWindow('app-metasploit-core')" class="flex flex-col items-center gap-1 p-2 rounded-xl hover:bg-cyber-danger/20 border border-cyber-danger/40 transition group">
+                    <div class="w-8 h-8 rounded-lg bg-cyber-danger/20 border border-cyber-danger/50 flex items-center justify-center text-cyber-danger"><i data-lucide="terminal" class="w-4 h-4"></i></div>
+                    <span class="text-[9px] text-white/95 font-bold">Metasploit</span>
+                </button>
+                <button onclick="openWindow('app-payload-gen')" class="flex flex-col items-center gap-1 p-2 rounded-xl hover:bg-cyber-danger/20 border border-cyber-danger/40 transition group">
+                    <div class="w-8 h-8 rounded-lg bg-cyber-danger/20 border border-cyber-danger/50 flex items-center justify-center text-cyber-danger"><i data-lucide="cpu" class="w-4 h-4"></i></div>
+                    <span class="text-[9px] text-white/95 font-bold">Payload Gen</span>
+                </button>
+                <button onclick="openWindow('app-sqli-mapper')" class="flex flex-col items-center gap-1 p-2 rounded-xl hover:bg-cyber-danger/20 border border-cyber-danger/40 transition group">
+                    <div class="w-8 h-8 rounded-lg bg-cyber-danger/20 border border-cyber-danger/50 flex items-center justify-center text-cyber-danger"><i data-lucide="database" class="w-4 h-4"></i></div>
+                    <span class="text-[9px] text-white/95 font-bold">SQLi Map</span>
+                </button>
+                <!-- External/Quick Link Shortcuts -->
+                <button onclick="window.open('https://404eye.netlify.app/','_blank')" class="flex flex-col items-center gap-1 p-2 rounded-xl hover:bg-cyber-accent/20 border border-transparent hover:border-cyber-accent/40 transition group">
+                    <div class="w-8 h-8 rounded-lg bg-cyan-500/20 border border-cyan-500/50 flex items-center justify-center text-cyan-400"><i data-lucide="eye" class="w-4 h-4"></i></div>
+                    <span class="text-[9px] text-white/95 font-bold">404Eye</span>
+                </button>
+                <button onclick="window.open('https://codepen.io','_blank')" class="flex flex-col items-center gap-1 p-2 rounded-xl hover:bg-cyber-accent/20 border border-transparent hover:border-cyber-accent/40 transition group">
+                    <div class="w-8 h-8 rounded-lg bg-blue-500/20 border border-blue-500/50 flex items-center justify-center text-blue-400"><i data-lucide="code-2" class="w-4 h-4"></i></div>
+                    <span class="text-[9px] text-white/95 font-bold">V. Studio</span>
+                </button>
+                <button onclick="window.open('https://github.com/','_blank')" class="flex flex-col items-center gap-1 p-2 rounded-xl hover:bg-cyber-accent/20 border border-transparent hover:border-cyber-accent/40 transition group">
+                    <div class="w-8 h-8 rounded-lg bg-white/20 border border-white/50 flex items-center justify-center text-white"><i data-lucide="git-branch" class="w-4 h-4"></i></div>
+                    <span class="text-[9px] text-white/95 font-bold">GitHub</span>
+                </button>
+                <button onclick="window.open('https://canarytokens.org/nest','_blank')" class="flex flex-col items-center gap-1 p-2 rounded-xl hover:bg-cyber-accent/20 border border-transparent hover:border-cyber-accent/40 transition group">
+                    <div class="w-8 h-8 rounded-lg bg-rose-500/20 border border-rose-500/50 flex items-center justify-center text-rose-500"><i data-lucide="server" class="w-4 h-4"></i></div>
+                    <span class="text-[9px] text-white/95 font-bold">IP Sys 404</span>
+                </button>
+            </div>
+
+            <!-- WINDOWS -->
+
+            <!-- NEW ATTACK WINDOW 1: METASPLOIT FRAMEWORK CORE MAX -->
+            <div id="app-metasploit-core" class="window glass-panel absolute top-10 left-44 w-[780px] h-[500px] max-w-[90vw] max-h-[85vh] rounded-2xl flex flex-col hidden overflow-hidden shadow-2xl z-30 border-2 border-cyber-danger/90">
+                <div class="window-header h-11 bg-black/90 px-5 flex items-center justify-between border-b-2 border-cyber-danger/70 cursor-move">
+                    <div class="flex items-center gap-2.5 text-xs text-cyber-danger font-black tracking-widest glow-text">
+                        <i data-lucide="terminal" class="w-5 h-5 text-cyber-danger animate-pulse"></i>
+                        <span>METASPLOIT FRAMEWORK & EXPLOIT SIMULATION CORE MAX</span>
+                    </div>
+                    <button onclick="closeWindow('app-metasploit-core')" class="w-3.5 h-3.5 rounded-full bg-red-500 hover:bg-red-600 transition shadow-lg"></button>
+                </div>
+                <div class="flex-1 bg-black/95 p-5 font-mono text-xs flex flex-col gap-4">
+                    <div class="flex justify-between items-center p-4 rounded-xl bg-black/90 border-2 border-cyber-danger/50 shadow-inner">
+                        <div>
+                            <div class="text-white font-bold text-sm">Automated Exploit Module Runner</div>
+                            <div class="text-[10px] text-cyber-danger mt-0.5">Executes multi-stage payload delivery simulations against targets</div>
+                        </div>
+                        <button onclick="runMetasploitExploit()" class="px-5 py-2.5 rounded-xl bg-cyber-danger/30 border-2 border-cyber-danger text-cyber-danger font-bold shadow glow-box">Launch Exploit Max</button>
+                    </div>
+                    <div class="text-white font-bold mt-1">Metasploit Console Execution Log:</div>
+                    <div id="msf-logs" class="flex-1 bg-black/90 border-2 border-cyber-danger/40 rounded-xl p-4 overflow-y-auto space-y-2 text-cyber-danger shadow-inner">
+                        [MSF] msf6 > use exploit/multi/handler<br>[MSF] Exploit framework core initialized. Ready for command execution...
+                    </div>
+                </div>
+            </div>
+
+            <!-- NEW ATTACK WINDOW 2: PAYLOAD GENERATOR & OBFUSCATOR MAX -->
+            <div id="app-payload-gen" class="window glass-panel absolute top-14 left-48 w-[780px] h-[500px] max-w-[90vw] max-h-[85vh] rounded-2xl flex flex-col hidden overflow-hidden shadow-2xl z-30 border-2 border-cyber-danger/90">
+                <div class="window-header h-11 bg-black/90 px-5 flex items-center justify-between border-b-2 border-cyber-danger/70 cursor-move">
+                    <div class="flex items-center gap-2.5 text-xs text-cyber-danger font-black tracking-widest glow-text">
+                        <i data-lucide="cpu" class="w-5 h-5 text-cyber-danger animate-pulse"></i>
+                        <span>ADVANCED PAYLOAD GENERATOR & POLYMORPHIC ENCODER MAX</span>
+                    </div>
+                    <button onclick="closeWindow('app-payload-gen')" class="w-3.5 h-3.5 rounded-full bg-red-500 hover:bg-red-600 transition shadow-lg"></button>
+                </div>
+                <div class="flex-1 bg-black/95 p-5 font-mono text-xs flex flex-col gap-4">
+                    <div class="flex justify-between items-center p-4 rounded-xl bg-black/90 border-2 border-cyber-danger/50 shadow-inner">
+                        <div>
+                            <div class="text-white font-bold text-sm">Polymorphic Shellcode Encoder</div>
+                            <div class="text-[10px] text-cyber-danger mt-0.5">Generates obfuscated payload buffers to bypass security signatures</div>
+                        </div>
+                        <button onclick="generatePolymorphicPayload()" class="px-5 py-2.5 rounded-xl bg-cyber-danger/30 border-2 border-cyber-danger text-cyber-danger font-bold shadow glow-box">Generate Payload Max</button>
+                    </div>
+                    <div class="text-white font-bold mt-1">Generated Obfuscated Shellcode Output:</div>
+                    <textarea id="payload-output" class="w-full h-32 bg-black/90 border-2 border-cyber-danger/50 rounded-xl p-3 text-cyber-danger focus:outline-none resize-none font-mono text-[11px] shadow-inner" readonly placeholder="کودی پەیلوودی شێوێنراو لێرە دەردەکەوێت..."></textarea>
+                </div>
+            </div>
+
+            <!-- NEW ATTACK WINDOW 3: SQL INJECTION (SQLi) MAPPER -->
+            <div id="app-sqli-mapper" class="window glass-panel absolute top-18 left-52 w-[780px] h-[500px] max-w-[90vw] max-h-[85vh] rounded-2xl flex flex-col hidden overflow-hidden shadow-2xl z-30 border-2 border-cyber-danger/90">
+                <div class="window-header h-11 bg-black/90 px-5 flex items-center justify-between border-b-2 border-cyber-danger/70 cursor-move">
+                    <div class="flex items-center gap-2.5 text-xs text-cyber-danger font-black tracking-widest glow-text">
+                        <i data-lucide="database" class="w-5 h-5 text-cyber-danger animate-pulse"></i>
+                        <span>SQL INJECTION (SQLi) DATABASE EXPLOITATION MAPPER MAX</span>
+                    </div>
+                    <button onclick="closeWindow('app-sqli-mapper')" class="w-3.5 h-3.5 rounded-full bg-red-500 hover:bg-red-600 transition shadow-lg"></button>
+                </div>
+                <div class="flex-1 bg-black/95 p-5 font-mono text-xs flex flex-col gap-4">
+                    <div class="flex justify-between items-center p-4 rounded-xl bg-black/90 border-2 border-cyber-danger/50 shadow-inner">
+                        <div>
+                            <div class="text-white font-bold text-sm">Automated SQLi Enumeration Engine</div>
+                            <div class="text-[10px] text-cyber-danger mt-0.5">Tests injection strings and dumps database schemas</div>
+                        </div>
+                        <button onclick="runSQLiMapping()" class="px-5 py-2.5 rounded-xl bg-cyber-danger/30 border-2 border-cyber-danger text-cyber-danger font-bold shadow glow-box">Run SQLi Scan Max</button>
+                    </div>
+                    <div class="text-white font-bold mt-1">SQLi Exploitation Database Feed:</div>
+                    <div id="sqli-logs" class="flex-1 bg-black/90 border-2 border-cyber-danger/40 rounded-xl p-4 overflow-y-auto space-y-2 text-cyber-danger shadow-inner">
+                        [SQLI] Target parameters loaded. Press 'Run SQLi Scan Max' to initiate vulnerability mapping...
+                    </div>
+                </div>
+            </div>
+
+            <!-- PREVIOUS WINDOWS -->
+            <div id="app-edr-core" class="window glass-panel absolute top-10 left-44 w-[780px] h-[500px] max-w-[90vw] max-h-[85vh] rounded-2xl flex flex-col hidden overflow-hidden shadow-2xl z-30 border-2 border-rose-500/80">
+                <div class="window-header h-11 bg-black/90 px-5 flex items-center justify-between border-b-2 border-rose-500/60 cursor-move">
+                    <div class="flex items-center gap-2.5 text-xs text-rose-400 font-black tracking-widest glow-text">
+                        <i data-lucide="shield" class="w-5 h-5 text-rose-500 animate-pulse"></i>
+                        <span>ENDPOINT DETECTION & RESPONSE (EDR) BEHAVIORAL CORE MAX</span>
+                    </div>
+                    <button onclick="closeWindow('app-edr-core')" class="w-3.5 h-3.5 rounded-full bg-red-500 hover:bg-red-600 transition shadow-lg"></button>
+                </div>
+                <div class="flex-1 bg-black/95 p-5 font-mono text-xs flex flex-col gap-4">
+                    <div class="flex justify-between items-center p-4 rounded-xl bg-black/90 border-2 border-rose-500/50 shadow-inner">
+                        <div>
+                            <div class="text-white font-bold text-sm">Active Behavioral Heuristic Engine</div>
+                            <div class="text-[10px] text-rose-300 mt-0.5">Monitors process injection, memory scraping, and privilege escalation attempts in real-time</div>
+                        </div>
+                        <button onclick="runEDRScan()" class="px-5 py-2.5 rounded-xl bg-rose-500/30 border-2 border-rose-500 text-rose-300 font-bold shadow glow-box">Run EDR Audit Max</button>
+                    </div>
+                    <div class="text-white font-bold mt-1">EDR Process Anomaly Telemetry:</div>
+                    <div id="edr-logs" class="flex-1 bg-black/90 border-2 border-rose-500/40 rounded-xl p-4 overflow-y-auto space-y-2 text-rose-300 shadow-inner">
+                        [READY] EDR Core v10.4 online. All system hooks and DLL injection monitors active.
+                    </div>
+                </div>
+            </div>
+
+            <div id="app-qkd-sim" class="window glass-panel absolute top-14 left-48 w-[780px] h-[500px] max-w-[90vw] max-h-[85vh] rounded-2xl flex flex-col hidden overflow-hidden shadow-2xl z-30 border-2 border-cyan-400/80">
+                <div class="window-header h-11 bg-black/90 px-5 flex items-center justify-between border-b-2 border-cyan-400/60 cursor-move">
+                    <div class="flex items-center gap-2.5 text-xs text-cyan-300 font-black tracking-widest glow-text">
+                        <i data-lucide="key" class="w-5 h-5 text-cyan-400 animate-pulse"></i>
+                        <span>QUANTUM KEY DISTRIBUTION (QKD) SECURE TUNNEL MATRIX</span>
+                    </div>
+                    <button onclick="closeWindow('app-qkd-sim')" class="w-3.5 h-3.5 rounded-full bg-red-500 hover:bg-red-600 transition shadow-lg"></button>
+                </div>
+                <div class="flex-1 bg-black/95 p-5 font-mono text-xs flex flex-col gap-4">
+                    <div class="flex justify-between items-center p-4 rounded-xl bg-black/90 border-2 border-cyan-500/50 shadow-inner">
+                        <div>
+                            <div class="text-white font-bold text-sm">Photon Polarization Key Exchange</div>
+                            <div class="text-[10px] text-cyan-300 mt-0.5">Detects any eavesdropping instantly via Heisenberg uncertainty principle</div>
+                        </div>
+                        <button onclick="generateQKDKey()" class="px-5 py-2.5 rounded-xl bg-cyan-500/30 border-2 border-cyan-400 text-cyan-200 font-bold shadow glow-box">Generate QKD Key</button>
+                    </div>
+                    <div class="text-white font-bold mt-1">Quantum Key Distribution Output:</div>
+                    <div id="qkd-logs" class="flex-1 bg-black/90 border-2 border-cyan-500/40 rounded-xl p-4 overflow-y-auto space-y-2 text-cyan-300 shadow-inner">
+                        [READY] QKD optical channel waiting for key generation...
+                    </div>
+                </div>
+            </div>
+
+            <div id="app-kernel-integrity" class="window glass-panel absolute top-18 left-52 w-[780px] h-[500px] max-w-[90vw] max-h-[85vh] rounded-2xl flex flex-col hidden overflow-hidden shadow-2xl z-30 border-2 border-amber-500/80">
+                <div class="window-header h-11 bg-black/90 px-5 flex items-center justify-between border-b-2 border-amber-500/60 cursor-move">
+                    <div class="flex items-center gap-2.5 text-xs text-amber-400 font-black tracking-widest glow-text">
+                        <i data-lucide="cpu" class="w-5 h-5 text-amber-400 animate-pulse"></i>
+                        <span>RUNTIME KERNEL INTEGRITY PROTECTOR & ROOTKIT DEFENDER</span>
+                    </div>
+                    <button onclick="closeWindow('app-kernel-integrity')" class="w-3.5 h-3.5 rounded-full bg-red-500 hover:bg-red-600 transition shadow-lg"></button>
+                </div>
+                <div class="flex-1 bg-black/95 p-5 font-mono text-xs flex flex-col gap-4">
+                    <div class="flex justify-between items-center p-4 rounded-xl bg-black/90 border-2 border-amber-500/50 shadow-inner">
+                        <div>
+                            <div class="text-white font-bold text-sm">Kernel Ring-0 Memory Table Scan</div>
+                            <div class="text-[10px] text-amber-300 mt-0.5">Verifies system call table pointers against kernel-level rootkits and hooks</div>
+                        </div>
+                        <button onclick="runKernelCheck()" class="px-5 py-2.5 rounded-xl bg-amber-500/30 border-2 border-amber-400 text-amber-200 font-bold shadow glow-box">Verify Kernel Integrity</button>
+                    </div>
+                    <div class="text-white font-bold mt-1">Kernel Integrity Audit Results:</div>
+                    <div id="kernel-logs" class="flex-1 bg-black/90 border-2 border-amber-500/40 rounded-xl p-4 overflow-y-auto space-y-2 text-amber-300 shadow-inner">
+                        [READY] Kernel integrity guard online. System tables immutable and secure.
+                    </div>
+                </div>
+            </div>
+
+            <!-- THREAT MAP & WI-FI SCANNER -->
+            <div id="app-threat-map" class="window glass-panel absolute top-8 left-32 w-[860px] h-[580px] max-w-[96vw] max-h-[92vh] rounded-2xl flex flex-col hidden overflow-hidden shadow-2xl z-30 border-2 border-cyber-neon/90">
+                <div class="window-header h-12 bg-black/90 px-5 flex items-center justify-between border-b-2 border-cyber-neon/60 cursor-move">
+                    <div class="flex items-center gap-2.5 text-xs text-cyber-neon font-black tracking-widest glow-text">
+                        <i data-lucide="radio" class="w-5 h-5 text-cyber-neon animate-spin"></i>
+                        <span>ADVANCED THREAT MAP & QUANTUM WI-FI RADAR V5.0 MAX</span>
+                    </div>
+                    <button onclick="closeWindow('app-threat-map')" class="w-3.5 h-3.5 rounded-full bg-red-500 hover:bg-red-600 transition shadow-lg"></button>
+                </div>
+                <div class="flex-1 bg-black/95 p-5 flex flex-col md:flex-row gap-5 overflow-hidden font-mono text-xs">
+                    <div class="w-full md:w-1/2 flex flex-col items-center justify-between border-2 border-cyber-neon/60 rounded-2xl p-4 bg-gradient-to-b from-black/90 to-cyber-neon/15 relative overflow-hidden shadow-[0_0_30px_rgba(0,255,102,0.25)]">
+                        <div class="w-full flex justify-between items-center text-[11px] text-cyber-neon font-bold border-b border-cyber-neon/40 pb-2">
+                            <span class="flex items-center gap-1.5"><i data-lucide="wifi" class="w-4 h-4"></i> MAX FREQ: 2.4 / 5.8 / 6.0 GHz</span>
+                            <span class="animate-pulse text-emerald-300 px-2 py-0.5 rounded bg-emerald-950/80 border border-emerald-500/70 font-bold">● FULL SPECTRUM ACTIVE</span>
+                        </div>
+                        <div class="w-52 h-52 rounded-full border-2 border-cyber-neon relative flex items-center justify-center glow-box my-2 bg-black/85 shadow-[0_0_40px_#00ff66]">
+                            <div class="absolute w-full h-[1px] bg-cyber-neon/70"></div>
+                            <div class="absolute h-full w-[1px] bg-cyber-neon/70"></div>
+                            <div class="w-36 h-36 rounded-full border border-cyber-neon/50 absolute"></div>
+                            <div class="w-20 h-20 rounded-full border border-cyber-neon/40 absolute"></div>
+                            <div class="w-8 h-8 rounded-full border border-cyber-neon/30 absolute"></div>
+                            <div class="radar-sweeper absolute inset-0 rounded-full origin-center pointer-events-none" style="background: conic-gradient(from 0deg, transparent 0deg, transparent 240deg, rgba(0, 255, 102, 0.75) 360deg);"></div>
+                            <i data-lucide="shield-check" class="w-8 h-8 text-cyber-neon z-10 animate-pulse"></i>
+                        </div>
+                        <div class="w-full grid grid-cols-2 gap-2 text-center text-[10px]">
+                            <div class="p-1.5 rounded bg-black/90 border border-cyber-neon/50 text-cyber-neon">
+                                PACKET RATE: <span id="wifi-pkt-rate" class="font-bold text-white">2,840 p/s</span>
+                            </div>
+                            <div class="p-1.5 rounded bg-black/90 border border-cyber-neon/50 text-cyber-neon">
+                                SIGNAL: <span class="font-bold text-emerald-400">ULTRA (-38 dBm)</span>
+                            </div>
+                        </div>
+                        <div class="w-full text-center text-xs text-cyber-neon font-black tracking-widest bg-cyber-neon/30 py-2 rounded-lg border border-cyber-neon/70 glow-box">
+                            WI-FI RADAR SECURE • MAXIMUM DEFENSE LEVEL
+                        </div>
+                    </div>
+                    <div class="w-full md:w-1/2 flex flex-col border-2 border-cyber-neon/60 rounded-2xl p-4 bg-black/90 justify-between shadow-2xl">
+                        <div>
+                            <div class="flex justify-between items-center mb-3 border-b border-cyber-neon/40 pb-2">
+                                <span class="text-white font-bold tracking-wider text-sm flex items-center gap-2"><i data-lucide="cpu" class="w-4 h-4 text-cyber-neon"></i> Connected Tactical Nodes Max:</span>
+                                <span class="text-cyber-neon font-bold text-xs bg-cyber-neon/30 px-2 py-0.5 rounded border border-cyber-neon/60" id="wifi-node-count">3 Active</span>
+                            </div>
+                            <div class="space-y-2.5 overflow-y-auto max-h-[310px] pr-1">
+                                <div class="p-3 rounded-xl bg-black/90 border border-cyber-neon/60 flex justify-between items-center shadow-lg hover:border-cyber-neon transition">
+                                    <div>
+                                        <div class="text-white font-bold flex items-center gap-2"><i data-lucide="router" class="w-4 h-4 text-cyber-neon"></i> TP-Link_344E (Master Gateway)</div>
+                                        <div class="text-[10px] text-cyber-accent/90 mt-1">IP: 192.168.1.1 | MAC: D8:07:B6:FF:4E | Speed: 2400 Mbps</div>
+                                    </div>
+                                    <span class="text-cyber-neon text-[10px] px-2.5 py-1 rounded bg-cyber-neon/30 font-bold border border-cyber-neon/60">ONLINE</span>
+                                </div>
+                                <div class="p-3 rounded-xl bg-black/90 border border-cyber-neon/60 flex justify-between items-center shadow-lg hover:border-cyber-neon transition">
+                                    <div>
+                                        <div class="text-white font-bold flex items-center gap-2"><i data-lucide="smartphone" class="w-4 h-4 text-cyan-400"></i> Apple iPhone 14 Pro Max</div>
+                                        <div class="text-[10px] text-cyber-accent/90 mt-1">IP: 192.168.1.14 | RSSI: -48 dBm | WPA3 Enterprise</div>
+                                    </div>
+                                    <span class="text-cyber-neon text-[10px] px-2.5 py-1 rounded bg-cyber-neon/30 font-bold border border-cyber-neon/60">ONLINE</span>
+                                </div>
+                                <div class="p-3 rounded-xl bg-black/90 border border-yellow-500/60 flex justify-between items-center shadow-lg hover:border-yellow-400 transition">
+                                    <div>
+                                        <div class="text-white font-bold flex items-center gap-2"><i data-lucide="laptop" class="w-4 h-4 text-yellow-400"></i> Quantum Defense Terminal</div>
+                                        <div class="text-[10px] text-cyber-accent/90 mt-1">IP: 192.168.1.105 | Kernel Root Host</div>
+                                    </div>
+                                    <span class="text-yellow-400 text-[10px] px-2.5 py-1 rounded bg-yellow-500/30 font-bold border border-yellow-500/60">HOST</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="mt-3 pt-3 border-t border-cyber-neon/40 flex gap-2">
+                            <button onclick="runIntensiveWifiScan()" class="flex-1 bg-cyber-neon/30 hover:bg-cyber-neon/40 border border-cyber-neon text-cyber-neon py-2.5 rounded-xl font-bold transition text-center shadow glow-box">
+                                Max Quantum Spectrum Calibration
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- SYSMON -->
+            <div id="app-sysmon" class="window glass-panel absolute top-16 left-48 w-[720px] h-[450px] max-w-[90vw] max-h-[80vh] rounded-xl flex flex-col hidden overflow-hidden shadow-2xl z-30">
+                <div class="window-header h-10 bg-black/60 px-4 flex items-center justify-between border-b border-cyber-accent/30 cursor-move">
+                    <div class="flex items-center gap-2 text-xs text-white font-bold"><i data-lucide="cpu" class="w-4 h-4 text-cyber-accent"></i><span>System Resource Monitor</span></div>
+                    <button onclick="closeWindow('app-sysmon')" class="w-3 h-3 rounded-full bg-red-500/80 hover:bg-red-500"></button>
+                </div>
+                <div class="flex-1 bg-black/95 p-5 font-mono text-xs flex flex-col gap-4">
+                    <div class="grid grid-cols-2 gap-3">
+                        <div class="p-3 rounded border border-cyber-accent/30 bg-black/60 text-center">
+                            <div class="text-cyber-accent/70">CPU LOAD</div>
+                            <div id="cpu-val" class="text-2xl font-bold text-cyber-neon">28%</div>
+                        </div>
+                        <div class="p-3 rounded border border-cyber-accent/30 bg-black/60 text-center">
+                            <div class="text-cyber-accent/70">RAM ALLOCATED</div>
+                            <div class="text-2xl font-bold text-cyber-accent">5.2 GB</div>
+                        </div>
+                    </div>
+                    <div class="flex-1 border border-cyber-accent/30 rounded p-3 bg-black/80 space-y-2">
+                        <div class="text-white font-bold">Kernel Daemon Threads:</div>
+                        <div class="flex justify-between p-1 bg-black/50 border border-cyber-accent/10"><span>kernel_defense.py</span><span class="text-cyber-neon">ACTIVE</span></div>
+                        <div class="flex justify-between p-1 bg-black/50 border border-cyber-accent/10"><span>packet_filter.ko</span><span class="text-cyber-neon">RUNNING</span></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- PROCESS MANAGER -->
+            <div id="app-procs" class="window glass-panel absolute top-14 left-52 w-[720px] h-[450px] max-w-[90vw] max-h-[80vh] rounded-xl flex flex-col hidden overflow-hidden shadow-2xl z-30">
+                <div class="window-header h-10 bg-black/60 px-4 flex items-center justify-between border-b border-cyber-accent/30 cursor-move">
+                    <div class="flex items-center gap-2 text-xs text-cyber-neon font-bold"><i data-lucide="list-tree" class="w-4 h-4"></i><span>Active Process Manager</span></div>
+                    <button onclick="closeWindow('app-procs')" class="w-3 h-3 rounded-full bg-red-500/80 hover:bg-red-500"></button>
+                </div>
+                <div class="flex-1 bg-black/95 p-4 font-mono text-xs flex flex-col gap-3">
+                    <div class="text-cyber-accent/80">List of active OS background daemons and tasks:</div>
+                    <div class="flex-1 bg-black/80 border border-cyber-accent/30 rounded p-2 overflow-y-auto space-y-2">
+                        <div class="flex justify-between p-2 rounded bg-black/60 border border-cyber-accent/20 items-center">
+                            <div><div class="text-white font-bold">darkgemini_core_daemon</div><div class="text-[10px] text-cyber-accent/60">PID: 404 | Memory: 142 MB</div></div>
+                            <span class="text-cyber-neon text-[9px] px-2 py-0.5 rounded bg-cyber-neon/20">RUNNING</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- USER AGENT & BROWSER FINGERPRINT INSPECTOR -->
+            <div id="app-ua-inspector" class="window glass-panel absolute top-16 left-38 w-[720px] h-[450px] max-w-[90vw] max-h-[80vh] rounded-xl flex flex-col hidden overflow-hidden shadow-2xl z-30">
+                <div class="window-header h-10 bg-black/60 px-4 flex items-center justify-between border-b border-cyber-accent/30 cursor-move">
+                    <div class="flex items-center gap-2 text-xs text-cyan-400 font-bold"><i data-lucide="fingerprint" class="w-4 h-4"></i><span>Browser & User-Agent Fingerprint Inspector</span></div>
+                    <button onclick="closeWindow('app-ua-inspector')" class="w-3 h-3 rounded-full bg-red-500/80 hover:bg-red-500"></button>
+                </div>
+                <div class="flex-1 bg-black/95 p-4 font-mono text-xs flex flex-col gap-3 overflow-y-auto">
+                    <div class="text-cyan-400 font-bold">Real Cryptographic Browser Telemetry:</div>
+                    <div class="p-3 bg-black/80 border border-cyan-500/30 rounded space-y-2 text-white">
+                        <div><span class="text-cyan-300 font-bold">User-Agent String:</span><div id="ua-full" class="text-[10px] text-white/80 mt-1 break-all bg-black/60 p-2 rounded border border-cyan-500/20"></div></div>
+                        <div class="flex justify-between"><span class="text-cyan-300">Cookie Enabled:</span> <span id="ua-cookies">True</span></div>
+                        <div class="flex justify-between"><span class="text-cyan-300">Online Status:</span> <span id="ua-net">Online</span></div>
+                        <div class="flex justify-between"><span class="text-cyan-300">Hardware Concurrency:</span> <span id="ua-cpu">4 Cores</span></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- SESSION AUDIT TRAIL LOGGER -->
+            <div id="app-audit-log" class="window glass-panel absolute top-20 left-44 w-[720px] h-[450px] max-w-[90vw] max-h-[80vh] rounded-xl flex flex-col hidden overflow-hidden shadow-2xl z-30">
+                <div class="window-header h-10 bg-black/60 px-4 flex items-center justify-between border-b border-cyber-accent/30 cursor-move">
+                    <div class="flex items-center gap-2 text-xs text-cyber-purple font-bold"><i data-lucide="shield-check" class="w-4 h-4"></i><span>Session Audit Trail Logger</span></div>
+                    <button onclick="closeWindow('app-audit-log')" class="w-3 h-3 rounded-full bg-red-500/80 hover:bg-red-500"></button>
+                </div>
+                <div class="flex-1 bg-black/95 p-4 font-mono text-xs flex flex-col gap-3">
+                    <div class="text-cyber-purple font-bold">Real-time system events & user action logs:</div>
+                    <div id="audit-trail-list" class="flex-1 bg-black/80 border border-cyber-purple/30 rounded p-3 overflow-y-auto space-y-2 text-cyber-purple">
+                        <div class="text-white/60">[00:00:00] [BOOT] DarkGemini404 OS initialized successfully.</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- SHA-256 HASH GENERATOR -->
+            <div id="app-sha256" class="window glass-panel absolute top-18 left-40 w-[700px] h-[440px] max-w-[90vw] max-h-[80vh] rounded-xl flex flex-col hidden overflow-hidden shadow-2xl z-30">
+                <div class="window-header h-10 bg-black/60 px-4 flex items-center justify-between border-b border-cyber-accent/30 cursor-move">
+                    <div class="flex items-center gap-2 text-xs text-rose-500 font-bold"><i data-lucide="key-round" class="w-4 h-4"></i><span>SHA-256 Crypto Hash Generator</span></div>
+                    <button onclick="closeWindow('app-sha256')" class="w-3 h-3 rounded-full bg-red-500/80 hover:bg-red-500"></button>
+                </div>
+                <div class="flex-1 bg-black/95 p-4 font-mono text-xs flex flex-col gap-3">
+                    <textarea id="sha-input" oninput="generateSHA256()" class="w-full h-28 bg-black/80 border border-rose-500/40 rounded p-2 text-white focus:outline-none resize-none" placeholder="دەق بنووسە بۆ دروستکردنی کودی هاشی سەربازی (SHA-256)..."></textarea>
+                    <div class="text-rose-400 font-bold">Generated Crypto Hash (SHA-256):</div>
+                    <textarea id="sha-output" class="w-full h-20 bg-black/80 border border-rose-500/30 rounded p-2 text-rose-300 focus:outline-none resize-none font-mono text-[11px]" readonly placeholder="کودی هاشی ڕاستەقینە لێرە دەردەکەوێت..."></textarea>
+                </div>
+            </div>
+
+            <!-- BASE64 ENCODER / DECODER -->
+            <div id="app-base64" class="window glass-panel absolute top-20 left-44 w-[740px] h-[480px] max-w-[90vw] max-h-[85vh] rounded-2xl flex flex-col hidden overflow-hidden shadow-2xl z-30 border-2 border-yellow-500/70">
+                <div class="window-header h-11 bg-black/90 px-5 flex items-center justify-between border-b-2 border-yellow-500/60 cursor-move">
+                    <div class="flex items-center gap-2.5 text-xs text-yellow-400 font-black tracking-widest glow-text">
+                        <i data-lucide="code" class="w-5 h-5 text-yellow-400 animate-pulse"></i>
+                        <span>ADVANCED BASE64 MILITARY-GRADE ENCODER / DECODER MAX</span>
+                    </div>
+                    <button onclick="closeWindow('app-base64')" class="w-3.5 h-3.5 rounded-full bg-red-500 hover:bg-red-600 transition shadow-lg"></button>
+                </div>
+                <div class="flex-1 bg-black/95 p-5 font-mono text-xs flex flex-col gap-4">
+                    <div class="text-yellow-300 font-bold flex justify-between items-center">
+                        <span>Input Payload Stream Max:</span>
+                        <span class="text-[10px] text-yellow-400 bg-yellow-950/60 px-2 py-0.5 rounded border border-yellow-500/60">UTF-8 Quantum Cryptographic Safe</span>
+                    </div>
+                    <textarea id="base64-input" class="w-full h-24 bg-black/90 border-2 border-yellow-500/50 rounded-xl p-3 text-white focus:outline-none resize-none shadow-inner" placeholder="دەق یان کۆدی هێماکراو بنووسە لێرە..."></textarea>
+                    <div class="flex gap-3">
+                        <button onclick="encodeBase64()" class="flex-1 bg-yellow-500/30 hover:bg-yellow-500/40 border-2 border-yellow-500 text-yellow-300 py-2.5 rounded-xl font-bold transition shadow glow-box">Encode Max (Base64)</button>
+                        <button onclick="decodeBase64()" class="flex-1 bg-cyber-neon/30 hover:bg-cyber-neon/40 border-2 border-cyber-neon text-cyber-neon py-2.5 rounded-xl font-bold transition shadow glow-box">Decode Max Stream</button>
+                        <button onclick="clearBase64()" class="px-5 bg-rose-500/30 hover:bg-rose-500/40 border-2 border-rose-500 text-rose-300 py-2.5 rounded-xl font-bold transition shadow">Clear</button>
+                    </div>
+                    <div class="text-cyber-accent font-bold mt-1">Processed Output Result Max:</div>
+                    <textarea id="base64-output" class="w-full h-24 bg-black/90 border-2 border-cyber-accent/50 rounded-xl p-3 text-cyber-accent focus:outline-none resize-none font-mono text-[11px] shadow-inner" readonly placeholder="ئەنجامی پرۆسێسکراوی سەربازی لێرە دەردەکەوێت..."></textarea>
+                </div>
+            </div>
+
+            <!-- SYSTEM & BROWSER TELEMETRY -->
+            <div id="app-telemetry" class="window glass-panel absolute top-18 left-36 w-[720px] h-[460px] max-w-[90vw] max-h-[85vh] rounded-2xl flex flex-col hidden overflow-hidden shadow-2xl z-30 border-2 border-cyan-500/70">
+                <div class="window-header h-11 bg-black/90 px-5 flex items-center justify-between border-b-2 border-cyan-500/60 cursor-move">
+                    <div class="flex items-center gap-2.5 text-xs text-cyan-400 font-black tracking-widest glow-text">
+                        <i data-lucide="hard-drive" class="w-5 h-5 text-cyan-400 animate-pulse"></i>
+                        <span>DEEP SYSTEM & BROWSER TELEMETRY MAX V4.0</span>
+                    </div>
+                    <button onclick="closeWindow('app-telemetry')" class="w-3.5 h-3.5 rounded-full bg-red-500 hover:bg-red-600 transition shadow-lg"></button>
+                </div>
+                <div class="flex-1 bg-black/95 p-5 font-mono text-xs flex flex-col gap-4 overflow-y-auto">
+                    <div class="text-cyan-400 font-bold mb-1 flex items-center gap-2"><i data-lucide="cpu" class="w-4 h-4"></i> Hardware & Cryptographic Diagnostics Max:</div>
+                    <div class="p-4 rounded-xl bg-black/90 border-2 border-cyan-500/50 space-y-3 text-white shadow-inner">
+                        <div class="flex justify-between border-b border-cyan-500/30 pb-2"><span class="text-cyan-400 font-bold">Platform / OS Architecture:</span> <span id="tele-os" class="font-bold text-cyan-200">Loading...</span></div>
+                        <div class="flex justify-between border-b border-cyan-500/30 pb-2"><span class="text-cyan-400 font-bold">Browser Vendor Engine:</span> <span id="tele-browser" class="font-bold text-cyan-200">Loading...</span></div>
+                        <div class="flex justify-between border-b border-cyan-500/30 pb-2"><span class="text-cyan-400 font-bold">Display Resolution & Viewport:</span> <span id="tele-screen" class="font-bold text-cyan-200">Loading...</span></div>
+                        <div class="flex justify-between border-b border-cyan-500/30 pb-2"><span class="text-cyan-400 font-bold">Logical Processor Cores:</span> <span id="tele-cpu-cores" class="font-bold text-cyan-200">Loading...</span></div>
+                        <div class="flex justify-between border-b border-cyan-500/30 pb-2"><span class="text-cyan-400 font-bold">Device Memory Allocation:</span> <span id="tele-memory" class="font-bold text-cyan-200">~16 GB Quantum Estimated</span></div>
+                        <div class="flex justify-between pt-1"><span class="text-cyan-400 font-bold">Network Connection State:</span> <span id="tele-net-state" class="font-bold text-emerald-400 animate-pulse">Secure & Online Max</span></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- LOGS -->
+            <div id="app-logs" class="window glass-panel absolute top-20 left-56 w-[700px] h-[440px] max-w-[90vw] max-h-[80vh] rounded-xl flex flex-col hidden overflow-hidden shadow-2xl z-30">
+                <div class="window-header h-10 bg-black/60 px-4 flex items-center justify-between border-b border-cyber-accent/30 cursor-move">
+                    <div class="flex items-center gap-2 text-xs text-yellow-400 font-bold"><i data-lucide="file-text" class="w-4 h-4"></i><span>Security Logs</span></div>
+                    <button onclick="closeWindow('app-logs')" class="w-3 h-3 rounded-full bg-red-500/80 hover:bg-red-500"></button>
+                </div>
+                <div class="flex-1 bg-black/95 p-4 font-mono text-xs overflow-y-auto space-y-2 text-yellow-300">
+                    <div class="p-2 rounded bg-yellow-500/10 border border-yellow-500/30">[18:43:00] [AUTH] Gateway unlocked with passcode 1234.</div>
+                    <div class="p-2 rounded bg-cyber-neon/10 border border-cyber-neon/30 text-cyber-neon">[18:43:10] [NET] Live Wi-Fi scan synchronized successfully.</div>
+                </div>
+            </div>
+
+            <!-- PORTSCANNER -->
+            <div id="app-portscan" class="window glass-panel absolute top-24 left-32 w-[740px] h-[480px] max-w-[90vw] max-h-[85vh] rounded-2xl flex flex-col hidden overflow-hidden shadow-2xl z-30 border-2 border-cyber-neon/70">
+                <div class="window-header h-11 bg-black/90 px-5 flex items-center justify-between border-b-2 border-cyber-neon/60 cursor-move">
+                    <div class="flex items-center gap-2.5 text-xs text-cyber-neon font-black tracking-widest glow-text">
+                        <i data-lucide="shield-check" class="w-5 h-5 text-cyber-neon animate-pulse"></i>
+                        <span>ADVANCED NETWORK PORT SCANNER UTILITY MAX</span>
+                    </div>
+                    <button onclick="closeWindow('app-portscan')" class="w-3.5 h-3.5 rounded-full bg-red-500 hover:bg-red-600 transition shadow-lg"></button>
+                </div>
+                <div class="flex-1 bg-black/95 p-5 font-mono text-xs flex flex-col gap-4">
+                    <div class="flex gap-3 items-center">
+                        <input type="text" id="port-target-ip" value="192.168.1.1" class="flex-1 bg-black/90 border-2 border-cyber-accent/50 rounded-xl px-4 py-3 text-white focus:outline-none shadow-inner" placeholder="Target IP Address...">
+                        <button onclick="runPortScan()" class="bg-cyber-neon/30 hover:bg-cyber-neon/40 border-2 border-cyber-neon text-cyber-neon px-6 py-3 rounded-xl font-bold transition shadow glow-box">Run Deep Scan Max</button>
+                    </div>
+                    <div class="text-cyber-accent font-bold">Port Inspection Results Matrix Max:</div>
+                    <div id="port-results" class="flex-1 bg-black/90 border-2 border-cyber-accent/40 rounded-xl p-4 overflow-y-auto space-y-2 text-cyber-neon shadow-inner">
+                        [READY] Target node initialized at max power. Press 'Run Deep Scan Max' to analyze all 65,535 ports...
+                    </div>
+                </div>
+            </div>
+
+            <!-- FIREWALL CONTROL -->
+            <div id="app-firewall" class="window glass-panel absolute top-14 left-44 w-[760px] h-[500px] max-w-[90vw] max-h-[85vh] rounded-2xl flex flex-col hidden overflow-hidden shadow-2xl z-30 border-2 border-cyber-danger/70">
+                <div class="window-header h-11 bg-black/90 px-5 flex items-center justify-between border-b-2 border-cyber-danger/60 cursor-move">
+                    <div class="flex items-center gap-2.5 text-xs text-cyber-danger font-black tracking-widest glow-text">
+                        <i data-lucide="shield-alert" class="w-5 h-5 text-cyber-danger animate-pulse"></i>
+                        <span>FIREWALL RULES & DEEP PACKET FILTER ENGINE MAX</span>
+                    </div>
+                    <button onclick="closeWindow('app-firewall')" class="w-3.5 h-3.5 rounded-full bg-red-500 hover:bg-red-600 transition shadow-lg"></button>
+                </div>
+                <div class="flex-1 bg-black/95 p-5 font-mono text-xs flex flex-col gap-4">
+                    <div class="flex justify-between items-center p-4 rounded-xl bg-black/90 border-2 border-cyber-danger/50 shadow-inner">
+                        <div>
+                            <div class="text-white font-bold text-sm">Global Packet Firewall Defense MAX</div>
+                            <div class="text-[10px] text-cyber-accent/90 mt-0.5">Blocks 100% of malicious inbound/outbound TCP/UDP intrusion packets</div>
+                        </div>
+                        <button onclick="toggleFirewall(this)" id="firewall-toggle-btn" class="px-5 py-2.5 rounded-xl bg-cyber-neon/30 border-2 border-cyber-neon text-cyber-neon font-bold shadow glow-box">ACTIVE MAX</button>
+                    </div>
+                    <div class="flex gap-3">
+                        <input type="text" id="fw-rule-input" placeholder="Add IP to block (e.g., 203.0.113.5)" class="flex-1 bg-black/90 border-2 border-cyber-danger/50 rounded-xl px-4 py-2.5 text-white focus:outline-none">
+                        <button onclick="addFirewallRule()" class="bg-cyber-danger/30 hover:bg-cyber-danger/40 border-2 border-cyber-danger text-cyber-danger px-6 py-2.5 rounded-xl font-bold transition shadow">Block IP Rule Max</button>
+                    </div>
+                    <div class="text-white font-bold mt-1">Active Blocked IP Firewall Rules Max:</div>
+                    <div id="firewall-rules-list" class="flex-1 bg-black/90 border-2 border-cyber-accent/40 rounded-xl p-4 overflow-y-auto space-y-2.5 shadow-inner">
+                        <div class="flex justify-between p-3 rounded-xl bg-black/80 border border-cyber-danger/40 items-center shadow">
+                            <span class="text-white">194.28.14.90 <span class="text-[10px] text-cyber-accent/80">(Suspicious Proxy Node Blocked)</span></span>
+                            <span class="text-cyber-danger font-bold text-[10px] px-2.5 py-1 rounded bg-cyber-danger/30 border border-cyber-danger/50">BLOCKED MAX</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- AI THREAT DETECTOR -->
+            <div id="app-ai-threat" class="window glass-panel absolute top-18 left-36 w-[720px] h-[460px] max-w-[90vw] max-h-[80vh] rounded-xl flex flex-col hidden overflow-hidden shadow-2xl z-30">
+                <div class="window-header h-10 bg-black/60 px-4 flex items-center justify-between border-b border-cyber-accent/30 cursor-move">
+                    <div class="flex items-center gap-2 text-xs text-cyber-purple font-bold"><i data-lucide="bot" class="w-4 h-4"></i><span>AI Threat Detector Engine</span></div>
+                    <button onclick="closeWindow('app-ai-threat')" class="w-3 h-3 rounded-full bg-red-500/80 hover:bg-red-500"></button>
+                </div>
+                <div class="flex-1 bg-black/95 p-4 font-mono text-xs flex flex-col gap-3">
+                    <div class="p-3 rounded border border-cyber-purple/40 bg-cyber-purple/10 text-cyber-purple font-bold flex items-center gap-2">
+                        <i data-lucide="cpu" class="w-5 h-5"></i> AI Core Neural Net: Optimal Defense Status Verified
+                    </div>
+                </div>
+            </div>
+
+            <!-- CYBER SPEEDTEST -->
+            <div id="app-speedtest" class="window glass-panel absolute top-22 left-40 w-[650px] h-[420px] max-w-[90vw] max-h-[80vh] rounded-xl flex flex-col hidden overflow-hidden shadow-2xl z-30">
+                <div class="window-header h-10 bg-black/60 px-4 flex items-center justify-between border-b border-cyber-accent/30 cursor-move">
+                    <div class="flex items-center gap-2 text-xs text-cyber-neon font-bold"><i data-lucide="gauge" class="w-4 h-4"></i><span>Cyber Speedtest Utility</span></div>
+                    <button onclick="closeWindow('app-speedtest')" class="w-3 h-3 rounded-full bg-red-500/80 hover:bg-red-500"></button>
+                </div>
+                <div class="flex-1 bg-black/95 p-5 font-mono flex flex-col items-center justify-center gap-4">
+                    <div class="text-center">
+                        <div class="text-cyber-accent/70 text-xs mb-1">DOWNLOAD SPEED</div>
+                        <div id="speed-val" class="text-4xl font-black text-cyber-neon glow-text">145.8 MB/s</div>
+                    </div>
+                    <button onclick="runSpeedtest()" class="bg-cyber-neon/20 hover:bg-cyber-neon/30 border border-cyber-neon text-cyber-neon px-6 py-2.5 rounded-lg font-bold transition text-xs">Run Test</button>
+                </div>
+            </div>
+
+            <!-- SATELLITE ORBITAL RADAR -->
+            <div id="app-sat-radar" class="window glass-panel absolute top-10 left-44 w-[780px] h-[560px] max-w-[95vw] max-h-[92vh] rounded-2xl flex flex-col hidden overflow-hidden shadow-2xl z-30 border-2 border-cyan-500/90">
+                <div class="window-header h-11 bg-black/90 px-5 flex items-center justify-between border-b-2 border-cyan-500/60 cursor-move">
+                    <div class="flex items-center gap-2.5 text-xs text-cyan-400 font-black tracking-widest glow-text">
+                        <i data-lucide="globe" class="w-5 h-5 text-cyan-400 animate-spin"></i>
+                        <span>SATELLITE ORBITAL TELEMETRY & DEFENSE UPLINK V5.0 MAX</span>
+                    </div>
+                    <button onclick="closeWindow('app-sat-radar')" class="w-3.5 h-3.5 rounded-full bg-red-500 hover:bg-red-600 transition shadow-lg"></button>
+                </div>
+                <div class="flex-1 bg-black/95 p-5 flex flex-col items-center justify-between relative overflow-hidden font-mono text-xs">
+                    <div class="w-full flex justify-between items-center bg-cyan-950/40 border-2 border-cyan-500/50 px-4 py-2 rounded-xl text-[11px] shadow-inner">
+                        <span class="text-cyan-300 font-bold flex items-center gap-2"><span class="w-2.5 h-2.5 rounded-full bg-emerald-400 animate-ping"></span> SECURE QUANTUM UPLINK MAX ACTIVE</span>
+                        <span class="text-white/90 font-bold" id="sat-utc-clock">UTC: --:--:--</span>
+                    </div>
+                    <div class="w-60 h-60 rounded-full border-2 border-cyan-400/90 relative flex items-center justify-center glow-box bg-cyan-950/20 my-1 shadow-[0_0_40px_#00f3ff]">
+                        <div class="absolute w-full h-[1px] bg-cyan-500/60"></div>
+                        <div class="absolute h-full w-[1px] bg-cyan-500/60"></div>
+                        <div class="w-40 h-40 rounded-full border border-cyan-500/50 absolute"></div>
+                        <div class="w-24 h-24 rounded-full border border-cyan-500/40 absolute"></div>
+                        <div class="radar-sweeper absolute inset-0 rounded-full origin-center pointer-events-none" style="background: conic-gradient(from 0deg, transparent 0deg, transparent 240deg, rgba(0, 243, 255, 0.7) 360deg);"></div>
+                        <div class="satellite-node absolute w-3.5 h-3.5 rounded-full bg-cyan-300 shadow-[0_0_20px_#00f3ff] flex items-center justify-center">
+                            <span class="absolute -top-6 text-[10px] text-cyan-200 font-black tracking-widest bg-black/95 px-2 py-0.5 rounded border border-cyan-500/70 shadow-lg">SAT-404-MAX</span>
+                        </div>
+                        <div class="absolute flex flex-col items-center justify-center animate-pulse">
+                            <i data-lucide="globe" class="w-10 h-10 text-cyan-400 glow-text"></i>
+                        </div>
+                    </div>
+                    <div class="w-full bg-black/90 border-2 border-cyan-500/60 rounded-2xl p-4 grid grid-cols-2 gap-3.5 text-[11px] shadow-2xl">
+                        <div class="flex justify-between border-b border-cyan-500/30 pb-1.5">
+                            <span class="text-cyan-400 font-bold">UPLINK STATUS MAX:</span> 
+                            <span class="text-emerald-400 font-black animate-pulse">LOCKED (100% QUANTUM)</span>
+                        </div>
+                        <div class="flex justify-between border-b border-cyan-500/30 pb-1.5">
+                            <span class="text-cyan-400 font-bold">ORBIT LAT/LONG:</span> 
+                            <span class="text-white font-bold" id="sat-coords">35.5893° N, 45.4053° E</span>
+                        </div>
+                        <div class="flex justify-between pt-0.5">
+                            <span class="text-cyan-400 font-bold">SIGNAL FREQ:</span> 
+                            <span class="text-cyan-200 font-bold">18.500 GHz (Military Ka-Band)</span>
+                        </div>
+                        <div class="flex justify-between pt-0.5">
+                            <span class="text-cyan-400 font-bold">PACKET LATENCY:</span> 
+                            <span class="text-cyan-200 font-bold" id="sat-latency">4.2 ms</span>
+                        </div>
+                    </div>
+                    <div class="w-full text-cyan-300 font-black tracking-widest text-center uppercase text-[11px] bg-cyan-950/60 py-2.5 px-4 rounded-xl border-2 border-cyan-500/60 glow-box shadow-lg">
+                        ORBITAL LINK MAX: SATELLITE 404-GEO SECURED & ENCRYPTED
+                    </div>
+                </div>
+            </div>
+
+            <!-- VAULT NOTES -->
+            <div id="app-vault" class="window glass-panel absolute top-14 left-60 w-[680px] h-[420px] max-w-[90vw] max-h-[80vh] rounded-xl flex flex-col hidden overflow-hidden shadow-2xl z-30">
+                <div class="window-header h-10 bg-black/60 px-4 flex items-center justify-between border-b border-cyber-accent/30 cursor-move">
+                    <div class="flex items-center gap-2 text-xs text-cyber-purple font-bold"><i data-lucide="lock" class="w-4 h-4"></i><span>Encrypted Vault</span></div>
+                    <button onclick="closeWindow('app-vault')" class="w-3 h-3 rounded-full bg-red-500/80 hover:bg-red-500"></button>
+                </div>
+                <div class="flex-1 bg-black/95 p-4 font-mono text-xs flex flex-col gap-3">
+                    <textarea id="vault-textarea" class="w-full flex-1 bg-black/80 border border-cyber-purple/40 rounded p-3 text-white focus:outline-none resize-none" placeholder="یادداشتە نهێنییەکانی خۆت لێرە بنووسە..."></textarea>
+                    <button onclick="saveVaultNotes()" class="bg-cyber-purple/20 hover:bg-cyber-purple/30 border border-cyber-purple text-cyber-purple py-2 rounded font-bold transition">Save</button>
+                </div>
+            </div>
+
+            <!-- TERMINAL -->
+            <div id="app-terminal" class="window glass-panel absolute top-28 left-24 w-[680px] h-[420px] max-w-[90vw] max-h-[80vh] rounded-xl flex flex-col hidden overflow-hidden shadow-2xl z-30">
+                <div class="window-header h-10 bg-black/60 px-4 flex items-center justify-between border-b border-cyber-accent/30 cursor-move">
+                    <div class="flex items-center gap-2 text-xs text-cyber-neon font-bold"><i data-lucide="terminal" class="w-4 h-4"></i><span>Terminal Shell</span></div>
+                    <button onclick="closeWindow('app-terminal')" class="w-3 h-3 rounded-full bg-red-500/80 hover:bg-red-500"></button>
+                </div>
+                <div class="flex-1 bg-black/95 p-4 font-mono text-xs flex flex-col overflow-hidden">
+                    <div id="terminal-logs" class="flex-1 overflow-y-auto space-y-2 text-cyber-neon mb-2">
+                        <div class="text-cyber-accent">DARKGEMINI404 TERMINAL ONLINE. type help</div>
+                    </div>
+                    <form id="terminal-form" onsubmit="handleTerminal(event)" class="flex items-center gap-2 border-t border-cyber-accent/20 pt-2">
+                        <span class="text-cyber-accent font-bold">soc@darkgemini404:~$</span>
+                        <input id="terminal-input" type="text" class="flex-1 bg-transparent text-white focus:outline-none">
+                    </form>
+                </div>
+            </div>
+
+        </main>
+    </div>
+
+    <script>
+        setInterval(() => { 
+            const now = new Date();
+            document.getElementById('clock').innerText = now.toLocaleTimeString(); 
+            document.getElementById('utc-clock').innerText = 'UTC: ' + now.toUTCString().slice(17, 25);
+            
+            const satUtc = document.getElementById('sat-utc-clock');
+            if(satUtc) satUtc.innerText = 'UTC: ' + now.toUTCString().slice(17, 25);
+
+            const lat = (35.5800 + Math.random() * 0.02).toFixed(4);
+            const lon = (45.4000 + Math.random() * 0.02).toFixed(4);
+            const latElem = document.getElementById('sat-coords');
+            if(latElem) latElem.innerText = `${lat}° N, ${lon}° E`;
+
+            const latencyElem = document.getElementById('sat-latency');
+            if(latencyElem) {
+                const randLat = (3.8 + Math.random() * 0.9).toFixed(1);
+                latencyElem.innerText = `${randLat} ms`;
+            }
+
+            const pktElem = document.getElementById('wifi-pkt-rate');
+            if(pktElem) {
+                const randPkt = Math.floor(2700 + Math.random() * 300);
+                pktElem.innerText = `${randPkt.toLocaleString()} p/s`;
+            }
+        }, 1000);
+
+        window.addEventListener('online', updateNetStatus);
+        window.addEventListener('offline', updateNetStatus);
+
+        function updateNetStatus() {
+            const badge = document.getElementById('net-status-badge');
+            if(navigator.onLine) {
+                badge.innerText = 'ONLINE MAX';
+                badge.className = 'px-2 py-0.5 rounded bg-cyber-neon/30 text-cyber-neon text-[9px] font-bold border border-cyber-neon/40';
+            } else {
+                badge.innerText = 'OFFLINE';
+                badge.className = 'px-2 py-0.5 rounded bg-cyber-danger/30 text-cyber-danger text-[9px] font-bold border border-cyber-danger/40';
+            }
+        }
+
+        function logAuditAction(actionName) {
+            const list = document.getElementById('audit-trail-list');
+            if(list) {
+                const timeStr = new Date().toLocaleTimeString();
+                list.innerHTML += `<div class="text-white/90">[${timeStr}] [AUDIT MAX] Action executed: ${actionName}</div>`;
+                list.scrollTop = list.scrollHeight;
+            }
+        }
+
+        function runIntensiveWifiScan() {
+            logAuditAction('Quantum Wi-Fi Max Spectrum Calibration Run');
+            alert('Maximum Wi-Fi spectrum calibration completed! All tactical nodes running at peak bandwidth.');
+        }
+
+        async function generateSHA256() {
+            const text = document.getElementById('sha-input').value;
+            if(!text) {
+                document.getElementById('sha-output').value = '';
+                return;
+            }
+            const encoder = new TextEncoder();
+            const data = encoder.encode(text);
+            const hashBuffer = await crypto.subtle.digest('SHA-256', data);
+            const hashArray = Array.from(new Uint8Array(hashBuffer));
+            const hashHex = hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+            document.getElementById('sha-output').value = hashHex;
+        }
+
+        function encodeBase64() {
+            try {
+                const val = document.getElementById('base64-input').value;
+                document.getElementById('base64-output').value = btoa(unescape(encodeURIComponent(val)));
+                logAuditAction('Base64 Military-Grade Max Encoded');
+            } catch(e) {
+                document.getElementById('base64-output').value = 'Error: Max encoding failure.';
+            }
+        }
+
+        function decodeBase64() {
+            try {
+                const val = document.getElementById('base64-input').value;
+                document.getElementById('base64-output').value = decodeURIComponent(escape(atob(val)));
+                logAuditAction('Base64 Military-Grade Max Decoded');
+            } catch(e) {
+                document.getElementById('base64-output').value = 'Error: Invalid Base64 Max payload.';
+            }
+        }
+
+        function clearBase64() {
+            document.getElementById('base64-input').value = '';
+            document.getElementById('base64-output').value = '';
+            logAuditAction('Base64 Max Buffer Cleared');
+        }
+
+        function runPortScan() {
+            const targetIp = document.getElementById('port-target-ip').value || '192.168.1.1';
+            const res = document.getElementById('port-results');
+            res.innerHTML = `<div class="text-cyber-neon animate-pulse">[SCAN MAX] Querying target ${targetIp} across all 65,535 quantum ports...</div>`;
+            logAuditAction(`Maximum Port Scan Initiated on target: ${targetIp}`);
+            setTimeout(() => {
+                res.innerHTML = `
+                    <div class="text-cyber-neon font-bold">[+] Target IP: ${targetIp} - Host Verified 100% Secure</div>
+                    <div class="text-cyber-neon">[+] Port 22 (SSH Secure Shell Max) - OPEN [ENCRYPTED]</div>
+                    <div class="text-cyber-neon">[+] Port 80 (HTTP Web Daemon Max) - OPEN [SECURED]</div>
+                    <div class="text-cyber-neon">[+] Port 443 (HTTPS Quantum Tunnel) - OPEN [OPTIMIZED]</div>
+                    <div class="text-cyan-400">[+] Port 8080 (Alt-HTTP Secure Proxy) - FILTERED</div>
+                    <div class="text-emerald-400 font-black mt-2">Deep Max Port Scan Completed Successfully. Zero Vulnerabilities.</div>
+                `;
+            }, 1000);
+        }
+
+        function toggleFirewall(btn) {
+            if(btn.innerText.includes('ACTIVE')) {
+                btn.innerText = 'DISABLED MAX';
+                btn.className = 'px-5 py-2.5 rounded-xl bg-cyber-danger/30 border-2 border-cyber-danger text-cyber-danger font-bold shadow';
+                logAuditAction('Global Firewall Packet Filter Disabled Max');
+            } else {
+                btn.innerText = 'ACTIVE MAX';
+                btn.className = 'px-5 py-2.5 rounded-xl bg-cyber-neon/30 border-2 border-cyber-neon text-cyber-neon font-bold shadow glow-box';
+                logAuditAction('Global Firewall Packet Filter Activated Max');
+            }
+        }
+
+        function addFirewallRule() {
+            const ipInput = document.getElementById('fw-rule-input');
+            const ipVal = ipInput.value.trim();
+            if(!ipVal) {
+                alert('Please enter a valid IP address to block.');
+                return;
+            }
+            const list = document.getElementById('firewall-rules-list');
+            list.innerHTML += `
+                <div class="flex justify-between p-3 rounded-xl bg-black/80 border border-cyber-danger/40 items-center shadow">
+                    <span class="text-white">${ipVal} <span class="text-[10px] text-cyber-accent/80">(Manual Max Firewall Rule)</span></span>
+                    <span class="text-cyber-danger font-bold text-[10px] px-2.5 py-1 rounded bg-cyber-danger/30 border border-cyber-danger/50">BLOCKED MAX</span>
+                </div>
+            `;
+            ipInput.value = '';
+            logAuditAction(`Firewall Rule Added: Blocked IP ${ipVal} at Max Level`);
+            alert(`IP address ${ipVal} successfully blocked at maximum security level!`);
+        }
+
+        // Functions for newly added attack simulation and exploit tools
+        function runMetasploitExploit() {
+            const logs = document.getElementById('msf-logs');
+            logs.innerHTML += `<div class="text-cyber-danger animate-pulse">[MSF] Sending exploit payload buffer to target target...</div>`;
+            setTimeout(() => {
+                logs.innerHTML += `<div class="text-white font-bold">[MSF] Exploit completed successfully. Meterpreter session 1 opened.</div>`;
+                logs.scrollTop = logs.scrollHeight;
+            }, 1000);
+            logAuditAction('Metasploit Exploit Simulation Executed Max');
+        }
+
+        function generatePolymorphicPayload() {
+            const area = document.getElementById('payload-output');
+            const randomCode = `\x31\xc0\x50\x68\x2f\x2f\x73\x68\x68\x2f\x62\x69\x6e\x89\xe3\x50\x53\x89\xe1\xb0\x0b\xcd\x80 [POLY-XOR-KEY:${Math.floor(Math.random()*9999)}]`;
+            area.value = randomCode;
+            logAuditAction('Polymorphic Shellcode Payload Generated Max');
+        }
+
+        function runSQLiMapping() {
+            const logs = document.getElementById('sqli-logs');
+            logs.innerHTML += `<div class="text-cyber-danger animate-pulse">[SQLI] Injecting boolean-based and union-based payload vectors...</div>`;
+            setTimeout(() => {
+                logs.innerHTML += `<div class="text-white font-bold">[SUCCESS] Database schema enumerated: 5 tables, 14 columns dumped successfully.</div>`;
+                logs.scrollTop = logs.scrollHeight;
+            }, 1000);
+            logAuditAction('SQL Injection Mapper Scan Executed Max');
+        }
+
+        function runEDRScan() {
+            const logs = document.getElementById('edr-logs');
+            logs.innerHTML += `<div class="text-rose-400 animate-pulse">[EDR] Scanning process memory spaces for behavioral heuristics...</div>`;
+            setTimeout(() => {
+                logs.innerHTML += `<div class="text-emerald-400 font-bold">[SECURE] 42 active processes audited. Zero injected threads or anomalies detected.</div>`;
+                logs.scrollTop = logs.scrollHeight;
+            }, 900);
+            logAuditAction('EDR Behavioral Scan Executed Max');
+        }
+
+        function generateQKDKey() {
+            const logs = document.getElementById('qkd-logs');
+            logs.innerHTML += `<div class="text-cyan-300">[QKD] Entangling photons and measuring polarization states...</div>`;
+            setTimeout(() => {
+                const randomKey = Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15);
+                logs.innerHTML += `<div class="text-emerald-400 font-bold">[LOCKED] QKD Key: QKD-KEY-${randomKey.toUpperCase()} (Eavesdrop Error Rate: 0.00%)</div>`;
+                logs.scrollTop = logs.scrollHeight;
+            }, 800);
+            logAuditAction('Quantum Key Distribution Session Created Max');
+        }
+
+        function runKernelCheck() {
+            const logs = document.getElementById('kernel-logs');
+            logs.innerHTML += `<div class="text-amber-300 animate-pulse">[KERNEL] Verifying system call table pointer immutability...</div>`;
+            setTimeout(() => {
+                logs.innerHTML += `<div class="text-emerald-400 font-bold">[VERIFIED] Ring-0 kernel integrity 100%. No rootkits or hypervisor hooks found.</div>`;
+                logs.scrollTop = logs.scrollHeight;
+            }, 1000);
+            logAuditAction('Runtime Kernel Integrity Guard Executed Max');
+        }
+
+        window.addEventListener('DOMContentLoaded', () => {
+            const savedNotes = localStorage.getItem('darkgemini_vault_notes');
+            if(savedNotes) {
+                document.getElementById('vault-textarea').value = savedNotes;
+            } else {
+                document.getElementById('vault-textarea', "[SECURE VAULT MAX] - Government Defense Notes:\n1. Wi-Fi telemetry active at max.\n2. Satellite radar telemetry fully operational at max power.");
+            }
+
+            document.getElementById('tele-os').innerText = navigator.platform || 'Unknown Quantum OS';
+            document.getElementById('tele-browser').innerText = navigator.userAgent.includes('Chrome') ? 'Google Chrome / Chromium Engine Max' : 'Advanced Web Browser Max';
+            document.getElementById('tele-screen').innerText = window.innerWidth + ' x ' + window.innerHeight + ' px (Retina Max)';
+            document.getElementById('tele-cpu-cores').innerText = (navigator.hardwareConcurrency || 8) + ' Cores at Max Frequency';
+            
+            document.getElementById('ua-full').innerText = navigator.userAgent;
+            document.getElementById('ua-cookies').innerText = navigator.cookieEnabled ? 'True (Active)' : 'False';
+            document.getElementById('ua-net').innerText = navigator.onLine ? 'Online' : 'Offline';
+            document.getElementById('ua-cpu').innerText = (navigator.hardwareConcurrency || 8) + ' Logical Cores Max';
+
+            updateNetStatus();
+        });
+
+        function saveVaultNotes() {
+            const notes = document.getElementById('vault-textarea').value;
+            localStorage.setItem('darkgemini_vault_notes', notes);
+            logAuditAction('Encrypted Vault Notes Saved Max');
+            alert('یادداشتەکان بە ئەوپەڕی سەلامەتییەوە پاشەکەوت کران!');
+        }
+
+        function setTheme(color, glow, box) {
+            document.documentElement.style.setProperty('--theme-color', color);
+            document.documentElement.style.setProperty('--theme-glow', glow);
+            document.documentElement.style.setProperty('--theme-box', box);
+            logAuditAction('System Theme Color Updated Max');
+        }
+
+        function handleTerminal(e) {
+            e.preventDefault();
+            const input = document.getElementById('terminal-input');
+            const logs = document.getElementById('terminal-logs');
+            const cmd = input.value.trim().toLowerCase();
+            logs.innerHTML += `<div class="text-white">soc@darkgemini404:~$ ${input.value}</div>`;
+            logAuditAction(`Terminal Command Max: ${input.value}`);
+            if(cmd === 'help') {
+                logs.innerHTML += `<div class="text-cyber-accent">Commands: metasploit, payload, sqli, satlink, wifiscan, sysinfo, clear</div>`;
+            } else if(cmd === 'metasploit') {
+                logs.innerHTML += `<div class="text-cyber-danger">Metasploit core ready: exploit simulation tools active.</div>`;
+            } else if(cmd === 'payload') {
+                logs.innerHTML += `<div class="text-cyber-danger">Payload generator: polymorphic encoder online.</div>`;
+            } else if(cmd === 'sqli') {
+                logs.innerHTML += `<div class="text-cyber-danger">SQLi mapper: database enumeration ready.</div>`;
+            } else if(cmd === 'satlink') {
+                logs.innerHTML += `<div class="text-cyan-400">Satellite 404-GEO Max link established successfully.</div>`;
+            } else if(cmd === 'wifiscan') {
+                logs.innerHTML += `<div class="text-cyber-neon">Wi-Fi Scanner max power nodes secure.</div>`;
+            } else if(cmd === 'sysinfo') {
+                logs.innerHTML += `<div class="text-cyber-neon">DarkGemini404 OS v10.0 Ultimate Attack & Defense Max</div>`;
+            } else if(cmd === 'clear') {
+                logs.innerHTML = '';
+            } else if(cmd !== '') {
+                logs.innerHTML += `<div class="text-cyber-danger">Unknown: ${cmd}</div>`;
+            }
+            input.value = '';
+            logs.scrollTop = logs.scrollHeight;
+        }
+
+        const passInput = document.getElementById('password-input');
+        const lockScreen = document.getElementById('lock-screen');
+        document.getElementById('login-form').addEventListener('submit', (e) => {
+            e.preventDefault();
+            if (passInput.value.trim() === '1234') {
+                lockScreen.classList.add('opacity-0', 'pointer-events-none');
+                logAuditAction('System Gateway Authenticated & Unlocked Max');
+            } else {
+                document.getElementById('error-msg').classList.remove('hidden');
+                logAuditAction('Failed Gateway Authentication Attempt Max');
+            }
+        });
+
+        function lockSystem() { 
+            lockScreen.classList.remove('opacity-0', 'pointer-events-none'); 
+            passInput.value = '';
+            document.getElementById('error-msg').classList.add('hidden');
+            logAuditAction('System Locked manually at Max level');
+        }
+
+        function openWindow(id) {
+            const win = document.getElementById(id);
+            win.classList.remove('hidden');
+            bringToFront(win);
+            logAuditAction(`Window Opened Max: ${id}`);
+        }
+        function closeWindow(id) { document.getElementById(id).classList.add('hidden'); }
+        function bringToFront(el) {
+            document.querySelectorAll('.window').forEach(w => w.style.zIndex = '30');
+            el.style.zIndex = '40';
+        }
+
+        lucide.createIcons();
+
+        const canvas = document.getElementById('matrix-canvas');
+        const ctx = canvas.getContext('2d');
+        function resize() { canvas.width = window.innerWidth; canvas.height = window.innerHeight; }
+        window.addEventListener('resize', resize); resize();
+        const chars = '0123456789DARKGEMINI404CYBERMAX';
+        const fontSize = 14, drops = Array(Math.floor(canvas.width / fontSize)).fill(1);
+        setInterval(() => {
+            ctx.fillStyle = 'rgba(5, 11, 20, 0.08)';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            ctx.fillStyle = getComputedStyle(document.body).getPropertyValue('--theme-color');
+            ctx.font = `${fontSize}px monospace`;
+            for (let i = 0; i < drops.length; i++) {
+                ctx.fillText(chars[Math.floor(Math.random() * chars.length)], i * fontSize, drops[i] * fontSize);
+                if (drops[i] * fontSize > canvas.height && Math.random() > 0.975) drops[i] = 0;
+                drops[i]++;
+            }
+        }, 33);
+    </script>
+</body>
+</html>
